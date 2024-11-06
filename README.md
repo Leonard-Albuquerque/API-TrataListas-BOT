@@ -10,6 +10,7 @@ Esta API permite o processamento de listas de contatos em arquivos Excel (.xlsx)
 - Retorna o arquivo tratado em formato `.xlsx` com o nome original precedido de `[TRATADO]`.
 
 ## Requisitos
+( OBS: Caso lhe seja mais interessante segue o link da imagem do Docker no DockerHUB : https://hub.docker.com/r/james1920/minha-api-fastapi )
 
 Para executar esta API, você precisará ter o Python instalado (versão 3.7 ou superior) e instalar as seguintes bibliotecas:
 
@@ -91,4 +92,6 @@ curl -X 'POST'   'http://127.0.0.1:8000/process'   -H 'accept: application/json'
 
 - **400 - Bad Request**: Este erro ocorre se o arquivo enviado não contém as colunas `NOME` e `TELEFONE`.
 - **500 - Internal Server Error**: Um erro interno indica problemas com o processamento do arquivo. Verifique o formato do arquivo e os dados contidos nas colunas.
+
+
 
