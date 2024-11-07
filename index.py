@@ -34,7 +34,7 @@ async def process_file(
         # Carregar o arquivo Excel
         df = pd.read_excel(file.file)
 
-        # Buscar a coluna para o nome do cliente
+        # Buscar as colunas necessárias
         nome_column = find_column(df, ["NOME", "Nome", "Cliente", "CLIENTE"])
         telefone_column = find_column(df, ["TELEFONE", "Telefone", "Celular"])
 
@@ -48,6 +48,9 @@ async def process_file(
         df = df[[nome_column, telefone_column]].copy()
         df['NOME'] = df[nome_column].apply(clean_name)
         df['TELEFONE'] = df[telefone_column].apply(format_phone)
+
+        # Remover duplicatas com base na coluna TELEFONE
+        df = df.drop_duplicates(subset='TELEFONE')
 
         # Gerar etiquetas e renomear colunas
         etiquetas = [f"{etiqueta_nome}_G{(i // num_grupos) + 1}" for i in range(len(df))]
