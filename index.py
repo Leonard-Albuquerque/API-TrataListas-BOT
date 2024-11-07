@@ -3,7 +3,7 @@ from fastapi.responses import FileResponse
 import pandas as pd
 import re
 from tempfile import NamedTemporaryFile
-#importações importante 
+
 app = FastAPI()
 
 def clean_name(name):
@@ -24,11 +24,30 @@ def find_column(df, options):
             return option
     return None
 
+def distribuir_aquecimento(total_pessoas, etiqueta_nome):
+    # Definir o limite para cada grupo de aquecimento
+    limites = [30, 30, 60, 60, 90, 90, 180]
+    etiquetas = []
+    grupo_index = 1
+    pessoas_contadas = 0
+    
+    for i in range(total_pessoas):
+        # Se o limite do grupo atual for atingido, passa para o próximo
+        if pessoas_contadas >= limites[min(grupo_index - 1, len(limites) - 1)]:
+            grupo_index += 1
+            pessoas_contadas = 0
+        
+        etiquetas.append(f"{etiqueta_nome}_G{grupo_index}")
+        pessoas_contadas += 1
+    
+    return etiquetas
+
 @app.post("/process")
 async def process_file(
     file: UploadFile = File(...),
     etiqueta_nome: str = Form(...),
-    num_grupos: int = Form(...)
+    num_grupos: int = Form(...),
+    aquecimento: bool = Form(False)  # Parâmetro adicional para ativar o aquecimento
 ):
     try:
         # Carregar o arquivo Excel
@@ -52,9 +71,16 @@ async def process_file(
         # Remover duplicatas com base na coluna TELEFONE
         df = df.drop_duplicates(subset='TELEFONE')
 
-        # Gerar etiquetas e renomear colunas
-        etiquetas = [f"{etiqueta_nome}_G{(i // num_grupos) + 1}" for i in range(len(df))]
-        df['ETIQUETA'] = etiquetas
+        # Aplicar a lógica de etiquetas
+        if aquecimento:
+            # Usar a função de distribuição de aquecimento
+            df['ETIQUETA'] = distribuir_aquecimento(len(df), etiqueta_nome)
+        else:
+            # Usar a lógica padrão de agrupamento
+            etiquetas = [f"{etiqueta_nome}_G{(i // num_grupos) + 1}" for i in range(len(df))]
+            df['ETIQUETA'] = etiquetas
+
+        # Selecionar as colunas finais
         df = df[['NOME', 'TELEFONE', 'ETIQUETA']]
 
         # Salvar o arquivo tratado em um arquivo temporário
