@@ -3,8 +3,21 @@ from fastapi.responses import FileResponse
 import pandas as pd
 import re
 from tempfile import NamedTemporaryFile
+from fastapi.middleware.cors import CORSMiddleware
+
+
 
 app = FastAPI()
+
+
+# Configuração de CORS
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Permite requisições de qualquer origem. Para maior segurança, você pode especificar o IP e porta do seu front-end.
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 def clean_name(name):
     return re.sub(r'[^\w\s]', '', name) if isinstance(name, str) else ""
