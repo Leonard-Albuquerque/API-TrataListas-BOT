@@ -3,7 +3,7 @@ from fastapi.responses import FileResponse
 import pandas as pd
 import re
 from tempfile import NamedTemporaryFile
-
+#importações importante 
 app = FastAPI()
 
 def clean_name(name):
