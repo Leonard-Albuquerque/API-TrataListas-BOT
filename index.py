@@ -71,8 +71,8 @@ async def process_file(
         df = pd.read_excel(file.file)
 
         # Buscar as colunas necessárias
-        nome_column = find_column(df, ["NOME", "Nome", "Cliente", "CLIENTE"])
-        telefone_column = find_column(df, ["TELEFONE", "Telefone", "Celular"])
+        nome_column = find_column(df, ["NOME", "Nome", "Cliente", "CLIENTE", "nome", "cliente"])
+        telefone_column = find_column(df, ["TELEFONE", "Telefone", "Celular", "celular", "telefone"])
 
         if nome_column is None or telefone_column is None:
             raise HTTPException(
