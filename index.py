@@ -29,6 +29,10 @@ def format_phone(phone):
             return phone
         if len(phone) == 11:
             return f"55{phone}"
+        if len(phone) == 8:
+            return f"55859{phone}"
+        if len(phone) == 9:
+            return f"5585{phone}"
     return ""
 
 def find_column(df, options):
